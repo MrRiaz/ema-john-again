@@ -11,6 +11,7 @@ import Home from './components/Home/Home';
 import Review from './components/Review/Review';
 import NoMatch from './components/NoMatch/NoMatch';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import ProductDetail from './components/ProductDetail/ProductDetail';
 
 function App() {
   return (
@@ -29,6 +30,9 @@ function App() {
             </Route>
             <Route exact path="/">
               <Home/>
+            </Route>
+            <Route path="/product/:productKey">
+              <ProductDetail/>
             </Route>
             <Route path="*">
               <NoMatch></NoMatch>
