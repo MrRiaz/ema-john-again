@@ -6,7 +6,7 @@ export const initializeLoginFrameWok = () => {
     if(firebase.apps.length === 0) {
       firebase.initializeApp(firebaseConfig);
     }
-}
+};
 
 export const handleGoogleSignIn = () => {
     const provider = new firebase.auth.GoogleAuthProvider();

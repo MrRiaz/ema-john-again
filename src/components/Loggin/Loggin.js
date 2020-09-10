@@ -25,8 +25,7 @@ function Loggin() {
 
 
   const googleSignIn = () => {
-      handleGoogleSignIn()
-        .then(res => {
+      handleGoogleSignIn().then(res => {
         setUser(res);
         setLoggingUser(res);
         // history.replace(from);
