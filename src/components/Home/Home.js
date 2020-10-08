@@ -2,26 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
 import Cart from '../Cart/Cart';
 import Shop from '../Shop/Shop';
-import fakeData from '../../fakeData';
 import './Home.css';
 import { addToDatabaseCart, getDatabaseCart } from '../../utilities/databaseManager';
 import { Link } from 'react-router-dom';
+import gif from '../../images/loading spinner.gif';
 
 const Home = () => {
-    const first10 = fakeData.slice(0, 10);
-    const [products, setProducts] = useState(first10);
+    const [products, setProducts] = useState([]);
     const [cart, setCart] = useState([]);
+    const [search, setSearch] = useState('');
+    document.title = "Shop";
+
+    useEffect(() => {
+        fetch('http://localhost:4000/products?search='+search)
+        .then(res => res.json())
+        .then(data => setProducts(data))
+    }, [search]);
+
+
+    const handleSearch = (e) => {
+        setSearch(e.target.value);
+    }
 
 
     useEffect(() => {
         const savedCart = getDatabaseCart();
         const productKeys = Object.keys(savedCart);
-        const cartProduct = productKeys.map(key => {
-            const product = fakeData.find(pd => pd.key === key);
-            product.quantity = savedCart[key]
-            return product;
+        fetch('https://enigmatic-tundra-18940.herokuapp.com/productsByKeys', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productKeys)
         })
-        setCart(cartProduct);
+        .then(res => res.json())
+        .then(data => setCart(data))
     }, []);
 
     // useEffect(() => {
@@ -53,11 +68,16 @@ const Home = () => {
         setCart(newCart);
         addToDatabaseCart(product.key, count);
     }
+
     return (
         <div>
             <Container fluid>
+                <input type="text" onBlur={handleSearch} className="search-box" placeholder="search" />
                 <Row className="justify-content-md-center">
                     <Col className="product-container" xs={12} sm={10} md={9}>
+                        {
+                            products.length === 0 && <div><img src={gif} alt=""/></div>
+                        }
                         {
                             products.map(pd => <Shop 
                                 key = {pd.key}

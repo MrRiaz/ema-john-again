@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { UserContext } from '../../App';
 import { useHistory, useLocation } from 'react-router-dom';
-import { handleGoogleSignIn } from 'firebase';
-import { handleSignOut, initializeLoginFrameWok } from './LoginManager';
+// import { } from 'firebase';
+import { createUserWithEmailAndPassword, handleSignOut, initializeLoginFrameWok, signInWithEmailAndPassword, handleGoogleSignIn  } from './LoginManager';
 
 
 function Loggin() {
@@ -15,7 +15,7 @@ function Loggin() {
     password: '',
   });
 
-  // initializeApp();
+
   initializeLoginFrameWok();
   
   const [loggingUser, setLoggingUser] = useContext(UserContext);
@@ -26,24 +26,26 @@ function Loggin() {
 
   const googleSignIn = () => {
       handleGoogleSignIn().then(res => {
-        setUser(res);
-        setLoggingUser(res);
-        // history.replace(from);
+        handleResponse(res, true);
       })
   }
   
   const signOut = () => {
     handleSignOut()
     .then(res => {
-      setUser(res);
-      setLoggingUser(res);
+      handleResponse(res, false);
     })
   }
+
+
+  const handleResponse = (res, redirect) => {
+    setUser(res);
+    setLoggingUser(res);
+    if(redirect){
+      history.replace(from);
+    }
+  }
   
-
-  // createUserWithEmailAndPassword();
-
-  // signInWithEmailAndPassword();
 
   const handleBlur = (e) => {
     let isFieldValid = true;
@@ -65,15 +67,20 @@ function Loggin() {
 
   const handleSubmit = (e) => {
     if(newUser && user.email && user.password){
-      
+      createUserWithEmailAndPassword(user.name, user.email, user.password)
+      .then(res => {
+        handleResponse(res, true);
+      })
       
     }
     if(!newUser && user.email  && user.password){
-      
+      signInWithEmailAndPassword(user.email, user.password)
+      .then(res => {
+        handleResponse(res, true)
+      })
     }
     e.preventDefault();
   }
-
 
 
   return (
@@ -93,8 +100,10 @@ function Loggin() {
       {/* <p>Name: {user.name} </p>
       <p>Email: {user.email} </p>
       <p>Password: {user.password} </p> */}
+
       <input type="checkbox" onChange={() => setNewUser(!newUser)} name="newUSer" id=""/>
       <label htmlFor="newUSer">New User Sign up</label> <br/>
+
       <form onSubmit={handleSubmit}>
         { newUser && <input onBlur={handleBlur} type="text" name="name" placeholder="Your name"/>}
         <br/>

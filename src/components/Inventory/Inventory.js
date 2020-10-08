@@ -1,9 +1,19 @@
 import React from 'react';
+import fakeData from '../../fakeData';
 
 const Inventory = () => {
+    const handleAddProduct = () => {
+        fetch('https://enigmatic-tundra-18940.herokuapp.com/addProduct', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(fakeData)
+        })
+    }
     return (
         <div>
-            <h3>Inventory Manage coming soon...</h3>
+            <button onClick={handleAddProduct}>Add Product</button>
         </div>
     );
 };

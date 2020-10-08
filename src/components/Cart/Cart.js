@@ -1,12 +1,16 @@
 import React from 'react';
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
 import './Cart.css';
 
 const Cart = (props) => {
     const cart = props.cart;
-    // console.log(cart);
-    const total = cart.reduce((acc, product) => acc + product.price * product.quantity, 0);
+    // const total = cart.reduce((acc, product) => acc + product.price * product.quantity, 0);
+
+    let total = 0;
+    for (let i = 0; i < cart.length; i++) {
+        const product = cart[i];
+        total = total + product.price * product.quantity || 1;
+        console.log(product.price, product.quantity);
+    }
 
     const tax = total/10;
     let shipping = 0;
